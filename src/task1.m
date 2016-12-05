@@ -1,8 +1,8 @@
 % Load partitioned data; to repartition, run regenerate_partitioned
-[ training, test, l ] = load_partitioned();
+[ training, test, l_train, l_test ] = load_partitioned();
 
-disp(['Training length is ' num2str(size(training, 1)) ...
-      '; test length is ' num2str(size(test, 1)) '.']);
+disp(['Training length is ' num2str(size(training, 2)) ...
+      '; test length is ' num2str(size(test, 2)) '.']);
   
 % TODO train with data
 
@@ -14,3 +14,6 @@ disp(['Dimensions of S are ' num2str(dims(1)) ' by ' num2str(dims(2)) ]);
 
 % Path to custom libsvm location on windows
 addpath('D:/Git/libsvm/windows');
+
+% Display a face to test new function
+show_face(training(:, 200));

@@ -12,7 +12,7 @@ l_test = zeros(1, x_cols/4);
 track = 1;
 for i=1:x_cols
     if mod(i, 4) > 0
-        training(:, track) = X(:, 1);
+        training(:, track) = X(:, i);
         l_train(track) = l(i);
         track = track + 1;
     else
