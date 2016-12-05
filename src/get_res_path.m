@@ -9,4 +9,3 @@ res_path = cat(1, root_path, 'res');
 res_path = strjoin(res_path, filesep);
 
 end
-
