@@ -6,14 +6,10 @@ disp(['Training length is ' num2str(size(training, 2)) ...
   
 % TODO train with data
 
-% Calculate the covariance matrix S of the training data, 1/N A A(T)
-N = 6;
-S = cov(((1/N) .* training), training');
-dims = size(S);
-disp(['Dimensions of S are ' num2str(dims(1)) ' by ' num2str(dims(2)) ]);
+% Find average face
+N = size(training, 2);
+average_face = sum(training, 2) ./ N;
+show_face(average_face);
 
 % Path to custom libsvm location on windows
 addpath('D:/Git/libsvm/windows');
-
-% Display a face to test new function
-show_face(training(:, 200));
