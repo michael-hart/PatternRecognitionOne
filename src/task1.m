@@ -9,7 +9,7 @@ disp(['Training length is ' num2str(size(training, 2)) ...
 % Find average face
 N = size(training, 2);
 average_face = sum(training, 2) ./ N;
-% show_face(average_face);
+show_face(average_face);
 
 % Remove the average face from the training set
 D = size(training, 1);
@@ -22,19 +22,29 @@ S = (1/N) * A * A';
 % Calculate the eigenvectors of this matrix
 [S_eig_vec, S_eig_val] = eig(S);
 
-% Eigenvalues are aleady in descending order!
-disp(S_eig_val(1:10, 1:10));
-% disp(S_eig_val(2566:2576, 2566:2576));
-disp(S_eig_vec(1:10, 1:10));
-
 % We want to work out how many non-zero eigenvalues there are
-% size(S_eig_val); TODO Meng why are there 2576 nonzero?!
-nonzero = nnz(S_eig_val);
-disp(['Number of nonzero elements is ' num2str(nonzero)]);
+nonzero = nnz(round(S_eig_val, 10));
+disp(['Number of nonzero elements in AAT is ' num2str(nonzero)]);
 
 % Repeat the above process for S = (1/N) A(T) A
 S2 = (1/N) * A' * A;
 [S2_eig_vec, S2_eig_val] = eig(S2);
-nonzero2 = nnz(S_eig_val);
+nonzero2 = nnz(round(S2_eig_val, 10));
+disp(['Number of nonzero elements in ATA is ' num2str(nonzero2)]);
 
-% Now compare 1:M of each matrix TODO
+% Save PCA data in a file called pca.mat
+res_path = get_res_path();
+part_path = strjoin({res_path 'pca.mat'}, filesep);
+save(part_path, 'average_face', 'S2_eig_vec', 'S2_eig_val', 'A');
+
+% Now compare 1:M of each matrix
+M = 20;
+r = 6;
+sub_eig_val = sum(S_eig_val(1:M, 1:M), 2);
+sub2_eig_val = sum(S2_eig_val(1:M, 1:M), 2);
+sub_eig_val = round(sub_eig_val, r);
+sub2_eig_val = round(sub2_eig_val, r);
+
+disp(['Identical elements: ' ...
+      num2str(sum(sum(sub_eig_val == sub2_eig_val))) ...
+      '; Expected: ' num2str(M)]);
