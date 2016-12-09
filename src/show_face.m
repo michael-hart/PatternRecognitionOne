@@ -3,7 +3,6 @@ function [ ] = show_face( img_data )
 
 img = vec2mat(img_data, 56);
 G = mat2gray(img);
-figure;
-imshow(G');
+imshow(G', 'Border', 'tight', 'InitialMagnification', 500);
 
 end
