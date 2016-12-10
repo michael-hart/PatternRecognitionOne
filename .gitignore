@@ -20,3 +20,6 @@ octave-workspace
 
 # PR Tutorial stuff
 misc
+
+# Large files
+pca.mat
