@@ -1,5 +1,5 @@
 % Load partitioned data; to repartition, run regenerate_partitioned
-[ training, test, l_train, l_test ] = load_partitioned();
+load(strjoin({res_path 'partitioned.mat'}, filesep));
 
 disp(['Training length is ' num2str(size(training, 2)) ...
       '; test length is ' num2str(size(test, 2)) '.']);
