@@ -3,8 +3,6 @@
 
 disp(['Training length is ' num2str(size(training, 2)) ...
       '; test length is ' num2str(size(test, 2)) '.']);
-  
-% TODO train with data
 
 % Find average face
 N = size(training, 2);
@@ -15,7 +13,6 @@ show_face(average_face);
 fig = gcf;
 fig.PaperPositionMode = 'auto';
 print('mean_face','-dpng','-r0');
-
 
 % Remove the average face from the training set
 D = size(training, 1);
@@ -43,7 +40,8 @@ disp(['Number of nonzero elements in ATA is ' num2str(nonzero2)]);
 % Save PCA data in a file called pca.mat
 res_path = get_res_path();
 part_path = strjoin({res_path 'pca.mat'}, filesep);
-save(part_path, 'A', 'average_face', 'S', 'S_eig_val','S_eig_vec', 'S2', 'S2_eig_val','S2_eig_vec');
+save(part_path, 'A', 'average_face', 'S', 'S_eig_val','S_eig_vec', ...
+                'S2', 'S2_eig_val','S2_eig_vec');
 
 % Now compare 1:M of each matrix
 % M = 20;
