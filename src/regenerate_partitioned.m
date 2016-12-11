@@ -1,5 +1,5 @@
 % First, load the training data using the standard function
-load('face.mat');
+[X, l] = load_data();
 
 % Partition the data using alternation, for now
 x_rows = size(X, 1);

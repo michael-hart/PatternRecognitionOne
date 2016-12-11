@@ -22,4 +22,8 @@ octave-workspace
 misc
 
 # Large files
-pca.mat
+res/pca.mat
+res/partitioned.mat
+
+#Pictures are generatable on each local machine. As and when needed. 
+*.png
