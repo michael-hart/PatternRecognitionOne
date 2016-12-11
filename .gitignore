@@ -22,4 +22,4 @@ octave-workspace
 misc
 
 # Large files
-pca.mat
+res/pca.mat
