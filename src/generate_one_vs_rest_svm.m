@@ -17,7 +17,7 @@ for j=1:N
         svm_labels(j) = -1;
     end
 end
-one_vs_rest_svm(M) = svmtrain(svm_labels, training');
+one_vs_rest_svm(M) = svmtrain(svm_labels, training', '-t 0');
 
 % Train remaining classes using the same method
 for i=1:M-1
@@ -27,7 +27,7 @@ for i=1:M-1
             svm_labels(j) = -1;
         end
     end
-    one_vs_rest_svm(i) = svmtrain(svm_labels, training');
+    one_vs_rest_svm(i) = svmtrain(svm_labels, training', '-t 0');
 end
 
 % Save calculated SVM list to prevent recalculating!
