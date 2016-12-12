@@ -1,5 +1,12 @@
-% For Michael, add path to LibSVM
-addpath('D:\Git\libsvm\windows');
+% For our different setups
+if ispc
+    addpath('D:\Git\libsvm\windows');
+end
+
+if ismac
+    addpath('/Users/acrisne/git/patternone/misc/libsvm/matlab');
+end
+    
 
 % First step is to load the data
 clear

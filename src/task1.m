@@ -1,4 +1,5 @@
 % Load partitioned data; to repartition, run regenerate_partitioned
+res_path = get_res_path();
 load(strjoin({res_path 'partitioned.mat'}, filesep));
 
 disp(['Training length is ' num2str(size(training, 2)) ...
@@ -37,20 +38,15 @@ nonzero2 = nnz(round(S2_eig_val, 10));
 disp(['Rank of ATA is ' num2str(rank(S2))]);
 disp(['Number of nonzero elements in ATA is ' num2str(nonzero2)]);
 
+% Timings for methods
+aat = @() eig((1/N) * A * A');
+ata = @() eig((1/N) * A' * A);
+
+time_aat = timeit(aat, 2);
+time_ata = timeit(ata, 2);
+
 % Save PCA data in a file called pca.mat
 res_path = get_res_path();
 part_path = strjoin({res_path 'pca.mat'}, filesep);
 save(part_path, 'A', 'average_face', 'S', 'S_eig_val','S_eig_vec', ...
-                'S2', 'S2_eig_val','S2_eig_vec');
-
-% Now compare 1:M of each matrix
-% M = 20;
-% r = 6;
-% sub_eig_val = sum(S_eig_val(1:M, 1:M), 2);
-% sub2_eig_val = sum(S2_eig_val(1:M, 1:M), 2);
-% sub_eig_val = round(sub_eig_val, r);
-% sub2_eig_val = round(sub2_eig_val, r);
-% 
-% disp(['Identical elements: ' ...
-%       num2str(sum(sum(sub_eig_val == sub2_eig_val))) ...
-%       '; Expected: ' num2str(M)]);
+                'S2', 'S2_eig_val','S2_eig_vec', 'time_aat', 'time_ata');
