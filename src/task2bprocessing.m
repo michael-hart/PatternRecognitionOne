@@ -47,3 +47,21 @@ set(findall(gcf,'type','text'),'fontSize',25);
 fig = gcf;
 fig.PaperPositionMode = 'auto';
 print('correctincorrectpercent','-dpng','-r0');
+
+figure('position', [0 0 1280 800]);
+plot(timings, 'LineWidth',5);
+
+title('Time Taken vs. Number of Eigenvectors', 'interpreter', 'latex');
+xlabel('Number of Eigenvectors');
+ylabel('Tics');
+grid;
+
+% If legends exists
+% set(leg,'FontSize',25);
+% Format data
+set(findall(gcf,'type','axes'),'fontsize',25);
+set(findall(gcf,'type','text'),'fontSize',25);
+% Save data
+fig = gcf;
+fig.PaperPositionMode = 'auto';
+print('tics','-dpng','-r0');

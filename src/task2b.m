@@ -14,6 +14,7 @@ B = test - average_face(:, ones(1,P));
 all_guesses = zeros(P, 3 * N);
 correct_vec = zeros(N, 1);
 incorrect_vec = zeros(N, 1);
+timings = zeros(N, 1);
 
 for M = 1:N
     % M is number of eigenvalues/vectors to use
@@ -23,6 +24,7 @@ for M = 1:N
     
     % Initialise for speed
     guesses = zeros(P, 3);
+    tic;
     for H = 1:P
         % For each face in testing set.
         l = l_test(H);
@@ -45,7 +47,8 @@ for M = 1:N
     
     end
     
-    % Keep
+     % Keep
+    timings(M) = toc;
     all_guesses(:, (3 * M - 2):(3 * M)) = guesses;
     correct = sum(guesses(:, 1));
     incorrect = P - correct;
@@ -53,4 +56,4 @@ for M = 1:N
     incorrect_vec(M) = incorrect;
 end
 
-save(strjoin({res_path 'nn.mat'}, filesep), 'correct_vec', 'incorrect_vec', 'all_guesses');
+save(strjoin({res_path 'nn.mat'}, filesep), 'correct_vec', 'incorrect_vec', 'all_guesses', 'timings');
