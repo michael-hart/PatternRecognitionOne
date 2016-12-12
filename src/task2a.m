@@ -25,15 +25,13 @@ avg_error_training = zeros(N, 1);
 avg_error_test = zeros(P, 1);
 total = size(S2_eig_vec_adj, 2);
 
-for M = 1:total
+for M=1:total
     % M is number of eigenvalues/vectors to use
     S2_eig_vec_sel = S2_eig_vec_adj(:, 1:M);
 
     % Project each face onto each eigenvector, each row is a face
     faces_coeff_training_sel = faces_coeff_training(:, 1:M);
     faces_coeff_test_sel = faces_coeff_test(:, 1:M);
-    
-    for H = 1
 
     % Reconstruct each face.
     faces_reconstructed_training = repmat(average_face, 1, N) + S2_eig_vec_sel * faces_coeff_training_sel';
