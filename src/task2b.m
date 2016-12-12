@@ -11,7 +11,7 @@ P = size(test, 2);
 B = test - average_face(:, ones(1,P));
 
 % Initialise for speed
-guesses = zeros(P, 3);
+all_guesses = zeros(P, 3 * N);
 correct_vec = zeros(N, 1);
 incorrect_vec = zeros(N, 1);
 
@@ -20,7 +20,9 @@ for M = 1:N
     % Project each face onto each eigenvector, each row is a face
     faces_coeff_training_sel = faces_coeff_training(:, 1:M);
     faces_coeff_test_sel = faces_coeff_test(:, 1:M);
-
+    
+    % Initialise for speed
+    guesses = zeros(P, 3);
     for H = 1:P
         % For each face in testing set.
         l = l_test(H);
@@ -44,10 +46,11 @@ for M = 1:N
     end
     
     % Keep
+    all_guesses(:, (3 * M - 2):(3 * M)) = guesses;
     correct = sum(guesses(:, 1));
     incorrect = P - correct;
     correct_vec(M) = correct;
     incorrect_vec(M) = incorrect;
 end
 
-save(strjoin({res_path 'nn.mat'}, filesep), 'correct_vec', 'incorrect_vec', 'guesses');
+save(strjoin({res_path 'nn.mat'}, filesep), 'correct_vec', 'incorrect_vec', 'all_guesses');
