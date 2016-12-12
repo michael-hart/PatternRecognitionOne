@@ -12,30 +12,29 @@ N = size(training, 2);
 % Clear previous SVM, as we allocate it by assigning to it
 clear one_vs_one_svm
 
+% Define SVM parameter
+svm_param = '-t 0';
+
 % Preallocate for efficiency
 correct = get_class(l_train, training, M);
 incorrect = get_class(l_train, training, M-1);
 train_data = horzcat(correct, incorrect);
 train_labels = horzcat(ones(1, size(correct, 2)), ...
                        ones(1, size(incorrect, 2)) .* -1);
-one_vs_one_svm(M*(M-1)) = svmtrain(train_labels', train_data', '-t 0');
+one_vs_one_svm(M*(M-1)/2) = svmtrain(train_labels', train_data', svm_param);
 
 current = 1;
 
-for class=1:M
+for class=1:M-1
     disp(['Creating all SVMs for class ' num2str(class)]);
-    for foe=1:M
-        if class==foe || current == M*(M-1)
-            % Either it's the same class or it's already been done
-            continue
-        end
+    for foe=class+1:M
         correct = get_class(l_train, training, class);
         incorrect = get_class(l_train, training, foe);
         train_data = horzcat(correct, incorrect);
         train_labels = horzcat(ones(1, size(correct, 2)), ...
                                ones(1, size(incorrect, 2)) .* -1);
         one_vs_one_svm(current) = svmtrain(train_labels', train_data', ...
-                                           '-t 0');
+                                           svm_param);
         current = current + 1;
     end
 end
