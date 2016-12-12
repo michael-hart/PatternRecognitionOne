@@ -9,6 +9,7 @@ N = size(training, 2);
 
 % Take a test face, index 23 for now to test theory
 guesses = zeros(size(test, 2), 1);
+
 for n=1:size(test, 2)
     l = l_test(n);
     test_face = test(:, n);
