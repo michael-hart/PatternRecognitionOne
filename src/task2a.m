@@ -16,34 +16,28 @@ N = size(training, 2);
 P = size(test, 2);
 B = test - average_face(:, ones(1,P));
 
-% % H is number of eigenvalues/vectors to use
-% H = 50;
-% S2_eig_vec_sel = S2_eig_vec_adj(:, 1:H);
-% 
-% % Project each face onto each eigenvector, each row is a face
-% face_coeff_training = A' * S2_eig_vec_sel;
-% face_coeff_test = B' * S2_eig_vec_sel;
-% 
-% % Reconstruct each face.
-% face_reconstructed_training = repmat(average_face, 1, N) + S2_eig_vec_sel * face_coeff_training';
-% face_reconstructed_test = repmat(average_face, 1, P) + S2_eig_vec_sel * face_coeff_test';
+% Project each face onto each eigenvector, each row is a face
+faces_coeff_training = A' * S2_eig_vec_adj;
+faces_coeff_test = B' * S2_eig_vec_adj;
 
 % Graph things
 avg_error_training = zeros(N, 1);
 avg_error_test = zeros(P, 1);
 total = size(S2_eig_vec_adj, 2);
 
-for M=1:total
+for M = 1:total
     % M is number of eigenvalues/vectors to use
     S2_eig_vec_sel = S2_eig_vec_adj(:, 1:M);
 
     % Project each face onto each eigenvector, each row is a face
-    faces_coeff_training = A' * S2_eig_vec_sel;
-    faces_coeff_test = B' * S2_eig_vec_sel;
+    faces_coeff_training_sel = faces_coeff_training(:, 1:M);
+    faces_coeff_test_sel = faces_coeff_test(:, 1:M);
+    
+    for H = 1
 
     % Reconstruct each face.
-    faces_reconstructed_training = repmat(average_face, 1, N) + S2_eig_vec_sel * faces_coeff_training';
-    faces_reconstructed_test = repmat(average_face, 1, P) + S2_eig_vec_sel * faces_coeff_test';
+    faces_reconstructed_training = repmat(average_face, 1, N) + S2_eig_vec_sel * faces_coeff_training_sel';
+    faces_reconstructed_test = repmat(average_face, 1, P) + S2_eig_vec_sel * faces_coeff_test_sel';
     
     % Error
     error_faces_training = training - faces_reconstructed_training;
@@ -56,4 +50,5 @@ for M=1:total
     avg_error_test(M) = mean(mag_error_faces_test);
 end
 
+save(strjoin({res_path 'atapca.mat'}, filesep), 'S2_eig_vec_adj', 'faces_coeff_training', 'faces_coeff_test');
 save(strjoin({res_path 'errors.mat'}, filesep), 'avg_error_training', 'avg_error_test');

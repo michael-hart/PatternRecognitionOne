@@ -4,8 +4,37 @@ res_path = get_res_path();
 load(strjoin({res_path 'pca.mat'}, filesep));
 load(strjoin({res_path 'partitioned.mat'}, filesep));
 load(strjoin({res_path 'projected.mat'}, filesep));
+load(strjoin({res_path 'pca.mat'}, filesep));
 
+
+% Some variables
 N = size(training, 2);
+P = size(test, 2);
+B = test - average_face(:, ones(1,P));
+total = size(S2_eig_vec_adj, 2);
+
+for M=1:total
+    % M is number of eigenvalues/vectors to use
+    S2_eig_vec_sel = S2_eig_vec_adj(:, 1:M);
+
+    % Project each face onto each eigenvector, each row is a face
+    faces_coeff_training = A' * S2_eig_vec_sel;
+    faces_coeff_test = B' * S2_eig_vec_sel;
+
+    % Reconstruct each face.
+    faces_reconstructed_training = repmat(average_face, 1, N) + S2_eig_vec_sel * faces_coeff_training';
+    faces_reconstructed_test = repmat(average_face, 1, P) + S2_eig_vec_sel * faces_coeff_test';
+    
+    % Error
+    error_faces_training = training - faces_reconstructed_training;
+    error_faces_test = test - faces_reconstructed_test;
+    % Magnitude of each column
+    mag_error_faces_training = sqrt(sum(error_faces_training .^2, 1));
+    mag_error_faces_test = sqrt(sum(error_faces_test .^2, 1));
+    % Assign and store
+    avg_error_training(M) = mean(mag_error_faces_training);
+    avg_error_test(M) = mean(mag_error_faces_test);
+end
 
 % Take a test face, index 23 for now to test theory
 guesses = zeros(size(test, 2), 1);
