@@ -1,12 +1,19 @@
-function [ indices ] = results( correct, incorrect, decision, labels, the_title, file_name )
+function [ indices, class_actual, class_guesses ] = results(decision, labels, the_title, file_name )
 % RESULTS Displays results
-    % Right or wrong stuff
-    percentage = 100 * correct/(correct + incorrect);
-    disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ' incorrectly; Success rate is ' num2str(percentage) '%.']);
-    
+
     % Wrong pics
     incorrect_vec = (decision ~= labels);
+    incorrect = sum(incorrect_vec);
+    correct = length(incorrect_vec) - incorrect;
+    
     indices = find(incorrect_vec);
+    class_guesses = decision(indices);
+    class_actual = labels(indices);
+    
+    % Right or wrong stuff
+    
+    percentage = 100 * correct/(correct + incorrect);
+    disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ' incorrectly; Success rate is ' num2str(percentage) '%.']);
     
     % Plot and save confusion matrix.
     figure('position', [0 0 800 800]);
@@ -27,5 +34,5 @@ function [ indices ] = results( correct, incorrect, decision, labels, the_title,
     fig.PaperPositionMode = 'auto';
     print(file_name,'-dpng','-r0');
 
-    endg
+end
 

@@ -20,34 +20,23 @@ load(strjoin({res_path 'one_v_rest.mat'}, filesep));
 svmtestpref = '-q';
 
 disp('RAW WITH TESTING UNSCALED')
-[~, ~, ~, answers1, correct, incorrect, wrong1] = svm_test(one_v_rest_svm_raw, test', l_test', svmtestpref);
-
-percentage = 100 * correct/(correct + incorrect);
-disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
-' incorrectly; Success rate is ' num2str(percentage) '%.']);
+[~, ~, ~, answers1] = svm_test(one_v_rest_svm_raw, test', l_test', svmtestpref);
+results(answers1, l_test', 'RAW WITH TESTING UNSCALED', 'svm_raw');
 
 disp('RAW WITH TESTING SCALED')
-[~, ~, ~, answers2, correct, incorrect, wrong2] = svm_test(one_v_rest_svm_raw_scaled, test_scaled', l_test', svmtestpref);
-
-percentage = 100 * correct/(correct + incorrect);
-disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
-' incorrectly; Success rate is ' num2str(percentage) '%.']);
+[~, ~, ~, answers2] = svm_test(one_v_rest_svm_raw_scaled, test_scaled', l_test', svmtestpref);
+results(answers2, l_test', 'RAW WITH TESTING SCALED', 'svm_raw_scaled');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 disp('PCA WITH TESTING UNSCALED')
-[~, ~, ~, ~, correct, incorrect, wrong3] = svm_test(one_v_rest_svm_pca, faces_coeff_test, l_test', svmtestpref);
+[~, ~, ~, answers3] = svm_test(one_v_rest_svm_pca, faces_coeff_test, l_test', svmtestpref);
+results(answers3, l_test', 'PCA WITH TESTING UNSCALED', 'svm_pca');
 
-percentage = 100 * correct/(correct + incorrect);
-disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
-' incorrectly; Success rate is ' num2str(percentage) '%.']);
 
 disp('PCA WITH TESTING SCALED')
-[~, ~, ~, ~, correct, incorrect, wrong4] = svm_test(one_v_rest_svm_pca_scaled, faces_coeff_test_scaled, l_test', svmtestpref);
-
-percentage = 100 * correct/(correct + incorrect);
-disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
-' incorrectly; Success rate is ' num2str(percentage) '%.']);
+[~, ~, ~, answers4] = svm_test(one_v_rest_svm_pca_scaled, faces_coeff_test_scaled, l_test', svmtestpref);
+results(answers4, l_test', 'PCA WITH TESTING SCALED', 'svm_pca_scaled');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
