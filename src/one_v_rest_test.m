@@ -19,15 +19,15 @@ end
 load(strjoin({res_path 'one_v_rest.mat'}, filesep));
 svmtestpref = '-q';
 
-disp('RAW UNSCALED WITH TRAINING UNSCALED')
-[correct, incorrect] = svm_test(one_v_rest_svm_raw, training', l_train', svmtestpref);
+disp('RAW WITH TESTING UNSCALED')
+[~, ~, ~, answers1, correct, incorrect, wrong1] = svm_test(one_v_rest_svm_raw, test', l_test', svmtestpref);
 
 percentage = 100 * correct/(correct + incorrect);
 disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
 ' incorrectly; Success rate is ' num2str(percentage) '%.']);
 
-disp('RAW SCALED WITH TESTING UNSCALED')
-[correct, incorrect] = svm_test(one_v_rest_svm_raw, test', l_test', svmtestpref);
+disp('RAW WITH TESTING SCALED')
+[~, ~, ~, answers2, correct, incorrect, wrong2] = svm_test(one_v_rest_svm_raw_scaled, test_scaled', l_test', svmtestpref);
 
 percentage = 100 * correct/(correct + incorrect);
 disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
@@ -35,16 +35,20 @@ disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% disp('PCA SCALED WITH TRAINING')
-% [correct, incorrect] = svm_test(one_v_rest_svm_pca_scaled, faces_coeff_training, l_train', svmtestpref);
-% 
-% percentage = 100 * correct/(correct + incorrect);
-% disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
-% ' incorrectly; Success rate is ' num2str(percentage) '%.']);
-% 
-% disp('PCA SCALED WITH TESTING')
-% [correct, incorrect] = svm_test(one_v_rest_svm_pca_scaled, faces_coeff_test_scaled, l_test', svmtestpref);
-% 
-% percentage = 100 * correct/(correct + incorrect);
-% disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
-% ' incorrectly; Success rate is ' num2str(percentage) '%.']);
+disp('PCA WITH TESTING UNSCALED')
+[~, ~, ~, ~, correct, incorrect, wrong3] = svm_test(one_v_rest_svm_pca, faces_coeff_test, l_test', svmtestpref);
+
+percentage = 100 * correct/(correct + incorrect);
+disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
+' incorrectly; Success rate is ' num2str(percentage) '%.']);
+
+disp('PCA WITH TESTING SCALED')
+[~, ~, ~, ~, correct, incorrect, wrong4] = svm_test(one_v_rest_svm_pca_scaled, faces_coeff_test_scaled, l_test', svmtestpref);
+
+percentage = 100 * correct/(correct + incorrect);
+disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ...
+' incorrectly; Success rate is ' num2str(percentage) '%.']);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+

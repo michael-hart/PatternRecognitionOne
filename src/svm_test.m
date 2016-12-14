@@ -1,4 +1,4 @@
-function [ correct, incorrect ] = svm_test( svm_list, data, labels, svmtestpref )
+function [ out_classes, decision_values, acc_total, max_index, correct, incorrect, indices ] = svm_test( svm_list, data, labels, svmtestpref )
 % SVM_TEST:  Tests data according to various 1vR SVMs
 % svm is SVMs
 % data is testing data (instance per row)
@@ -28,20 +28,14 @@ function [ correct, incorrect ] = svm_test( svm_list, data, labels, svmtestpref 
         % Accuracy values, just for fun.
         acc_total(:, svm_n) = acc;
     end
-
-    % Each row of out_classes gives the 52 SVMs' outputs for that test pic
-    % Either 1 for yes or -1 for no. Acquire only 1's, rest will be 0's
-    out_class_yes = out_classes == 1;
-
-    % Element-wise multiplications. Only 1 values' decision value will stay
-    final_class = out_class_yes .* decision_values;
-
-    % Maximum index is the class of highest likelihood
-    [~, max_index] = max(final_class, [], 2);
-
-    % Check back
-    correct_vec = max_index == labels;
-    correct = sum(correct_vec);
-    incorrect = num_tests - correct;
+    
+    % Actually useful stuff. Select best guess per row.
+    % Most likely class per picture.
+    
+    [~, max_index] = max(decision_values, [], 2);
+    incorrect_vec = (max_index ~= labels);
+    incorrect = sum(incorrect_vec);
+    correct = length(incorrect_vec) - incorrect;
+    indices = find(incorrect_vec);
 end
 
