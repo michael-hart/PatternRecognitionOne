@@ -13,7 +13,7 @@ plot(correct_vec, 'LineWidth',5);
 plot(incorrect_vec, 'LineWidth',5);
 hold off;
 
-title('Corrent and Incorrect Guesses vs. Number of Eigenvectors', 'interpreter', 'latex');
+title('Correct and Incorrect Guesses vs. Number of Eigenvectors', 'interpreter', 'latex');
 xlabel('Number of Eigenvectors');
 ylabel('Number of Guesses');
 grid;

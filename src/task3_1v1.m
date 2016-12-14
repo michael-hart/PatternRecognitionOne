@@ -5,8 +5,14 @@ clear
 res_path = get_res_path();
 load(strjoin({res_path 'partitioned.mat'}, filesep));
 
-% For Michael, add path to LibSVM
-addpath('D:\Git\libsvm\windows');
+% For our different setups
+if ispc
+    addpath('D:\Git\libsvm\windows');
+end
+
+if ismac
+    addpath('/Users/acrisne/git/patternone/misc/libsvm/matlab');
+end
 
 % Load one vs one data
 load(strjoin({res_path 'one_vs_one.mat'}, filesep));
