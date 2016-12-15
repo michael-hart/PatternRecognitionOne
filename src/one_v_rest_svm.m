@@ -1,4 +1,4 @@
-function [ svms ] = multi_class_svm( training_data, labels, svmtrainpref)
+function [ svms ] = one_v_rest_svm( training_data, labels, svmtrainpref)
 % MULTI_CLASS_SVM: Data + Labels = 1vR SVMs
 % training_data is training instance per row.
 % Corresponding value in labels is class, labels is row vector.
