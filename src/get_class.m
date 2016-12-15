@@ -10,8 +10,7 @@ function [ class_data ] = get_class( labels, data, class_number )
     class_instances = labels(:) == class_number;
   
     % New matrix only columns with data points needed
-    class_data = data(:, class_instances);
+    class_data = data(:, class_instances');
     
     % Return
-
 end

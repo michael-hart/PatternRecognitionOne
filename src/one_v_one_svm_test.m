@@ -44,12 +44,17 @@ function [ out_classes, decision_values, votes, decision ] = one_v_one_svm_test(
     for test_case = 1:num_tests
         % Acquire layer
         working_matrix = votes(:, :, test_case);
-        % Obtain number of each class appearing, including 0s
-        N_z= histcounts(working_matrix, 53);
-        % Remove zeros
-        N = N_z(2:52);
+        % Votes per class
+%         class_votes = [(1:num_svms_col)', zeros(num_svms_col, 1)];
+        class_votes = zeros(num_svms_col, 1);
+        
+        % Obtain number of each class appearing, again loop, no choice?
+        for count = 1:length(class_votes)
+            class_votes(count) = nnz(working_matrix == count);
+        end
+        
         % Maximum
-        [~, index] = max(N);
+        [~, index] = max(class_votes);
         decision(test_case) = index;
     end
 

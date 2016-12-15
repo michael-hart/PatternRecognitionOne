@@ -10,7 +10,7 @@ function [ svms ] = one_v_one_svm( data, labels, svmtrainpref)
     % Start from bottom row to start (M-1, until 1)
     for friend = (M-1):-1:1
         % Right most column, M until class+1 (i.e. M, M-1, ... 2)
-        for foe = M:-1:(class + 1)
+        for foe = M:-1:(friend + 1)
 
             % Obtain data for classes in question, and sizes
             correct = get_class(labels, data, friend);
