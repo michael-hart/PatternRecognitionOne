@@ -1,5 +1,5 @@
 function [ out_classes, decision_values, acc_total, max_index ] = one_v_rest_svm_test( svm_list, data, labels, svmtestpref )
-% SVM_TEST:  Tests data according to various 1vR SVMs
+% ONE_V_REST_SVM_TEST:  Tests data according to various 1vR SVMs
 % svm is SVMs
 % data is testing data (instance per row)
 % labels is associated labels

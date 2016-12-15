@@ -10,7 +10,7 @@ end
 % First step is to load the data
 clear
 
-svmtrainpref = '-t 0 -s 0 -q -c 1 -e 0.001';
+svmtrainpref = '-t 0 -s 0 -q';
 
 res_path = get_res_path();
 load(strjoin({res_path 'partitioned.mat'}, filesep));

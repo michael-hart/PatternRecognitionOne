@@ -1,5 +1,5 @@
 function [ class_data ] = get_class( labels, data, class_number )
-%GET_CLASS Returns only class data
+% GET_CLASS Returns only class data
 % Data corresponds to labels in input arguments
 % class_number is the requested label
 % Only return is matrix of all data associated with class

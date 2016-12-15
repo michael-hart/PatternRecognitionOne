@@ -20,8 +20,8 @@ load(strjoin({res_path 'one_v_one.mat'}, filesep));
 svmtestpref = '-q';
 
 disp('RAW WITH TESTING UNSCALED')
-[~, ~, ~, answers1] = one_v_one_svm_test(one_v_rest_svm_raw, test', l_test', svmtestpref);
-results(answers1, l_test', 'RAW WITH TESTING UNSCALED', 'svm_raw');
+[classes, decision_values, votes, answers1] = one_v_one_svm_test(one_v_one_svm_raw, training', svmtestpref);
+% results(answers1, l_test', 'RAW WITH TESTING UNSCALED', 'svm_raw');
 
 % disp('RAW WITH TESTING SCALED')
 % [~, ~, ~, answers2] = svm_test(one_v_rest_svm_raw_scaled, test_scaled', l_test', svmtestpref);
