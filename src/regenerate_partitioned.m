@@ -1,5 +1,6 @@
-% First, load the training data using the standard function
-[X, l] = load_data();
+% First, load the training data
+res_path = get_res_path();
+load(strjoin({res_path 'face.mat'}, filesep));
 
 % Partition the data using alternation, for now
 x_rows = size(X, 1);
