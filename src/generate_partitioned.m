@@ -19,8 +19,8 @@ if random
         data = data(:, randperm(N));
 
         % Partition data
-        training = data(:, 1:(3/4)*N);
-        test = data(:, (3/4)*N+1:end);
+        training = data(:, 1:(7/10)*N);
+        test = data(:, (7/10)*N+1:end);
 
         % Remove indices
         training_indices = training(1, :);
@@ -48,7 +48,7 @@ if random
 else
     % Create indices as every fourth sample is test sample
     training_indices = 1:N;
-    test_indices = 4:4:N;
+    test_indices = sort(horzcat(8:10:N, 9:10:N, 10:10:N));
     training_indices(test_indices) = [];
     % Partition data using the indices
     training = X(:, training_indices);
