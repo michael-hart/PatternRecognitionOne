@@ -1,4 +1,5 @@
-function [ indices, class_actual, class_guesses ] = results(decision, labels, the_title, file_name )
+function [ indices, class_actual, class_guesses, percentage ] = ...
+    results(decision, labels, the_title, file_name )
 % RESULTS Displays results
 
     % Wrong pics
@@ -13,7 +14,9 @@ function [ indices, class_actual, class_guesses ] = results(decision, labels, th
     % Right or wrong stuff
     
     percentage = 100 * correct/(correct + incorrect);
-    disp(['Guessed ' num2str(correct) ' correctly and ' num2str(incorrect) ' incorrectly; Success rate is ' num2str(percentage) '%.']);
+    disp(['Guessed ' num2str(correct) ' correctly and ' ...
+          num2str(incorrect) ' incorrectly; Success rate is ' ...
+          num2str(percentage) '%.']);
     
     % Plot and save confusion matrix.
     figure('position', [0 0 800 800]);
