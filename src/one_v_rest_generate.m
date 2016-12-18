@@ -10,19 +10,28 @@ end
 % First step is to load the data
 clear
 
-svmtrainpref = '-t 0 -s 0 -q -c 1 -e 0.001';
+% svmtrainpref = '-t 0 -s 0 -q -c .1';
 
 res_path = get_res_path();
 load(strjoin({res_path 'partitioned.mat'}, filesep));
 load(strjoin({res_path 'atapca.mat'}, filesep));
 
 % Scale raw data
-training_scaled = normc(training);
-test_scaled = normc(test);
+% training_scaled = normc(training);
+% test_scaled = normc(test);
+N = size(training, 2);
+raw_to_scale = horzcat(training, test);
+raw_scaled = zscore(raw_to_scale, 0, 2);
+training_scaled = raw_scaled(:, 1:N);
+test_scaled = raw_scaled(:, N+1:size(raw_scaled, 2));
 
 % Scale face data
-faces_coeff_training_scaled = normr(faces_coeff_training);
-faces_coeff_test_scaled = normr(faces_coeff_test);
+% faces_coeff_training_scaled = normr(faces_coeff_training);
+% faces_coeff_test_scaled = normr(faces_coeff_test);
+pca_to_scale = vertcat(faces_coeff_training, faces_coeff_test);
+pca_scaled = zscore(pca_to_scale, 0, 1);
+faces_coeff_training_scaled = pca_scaled(1:N, :);
+faces_coeff_test_scaled = pca_scaled(N+1:size(pca_scaled, 1), :);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Train SVMs (raw unscaled, raw scaled, pca unscaled, pca scaled)

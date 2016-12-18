@@ -20,23 +20,23 @@ load(strjoin({res_path 'one_v_one.mat'}, filesep));
 svmtestpref = '-q';
 
 disp('RAW WITH TESTING UNSCALED')
-[~, ~, ~, answers1] = one_v_one_svm_test(one_v_one_svm_raw, training', svmtestpref);
-[wrong1, ~, ~] = results(answers1, l_train', 'One-v-One Raw Data Unscaled', 'onevoneraw');
+[~, ~, ~, answers1] = one_v_one_svm_test(one_v_one_svm_raw, test', svmtestpref);
+[wrong1, ~, ~] = results(answers1, l_test', 'One-v-One Raw Data Unscaled', 'onevoneraw');
 
 disp('RAW WITH TESTING SCALED')
-[classes, decision_values, votes, answers2] = one_v_one_svm_test(one_v_one_svm_raw_scaled, training_scaled', svmtestpref);
-[wrong2, ~, ~] = results(answers2, l_train', 'One-v-One Raw Data Scaled', 'onevonerawscaled');
+[classes, decision_values, votes, answers2] = one_v_one_svm_test(one_v_one_svm_raw_scaled, test_scaled', svmtestpref);
+[wrong2, ~, ~] = results(answers2, l_test', 'One-v-One Raw Data Scaled', 'onevonerawscaled');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 disp('PCA WITH TESTING UNSCALED')
-[~, ~, ~, answers3] = one_v_one_svm_test(one_v_one_svm_pca, faces_coeff_training, svmtestpref);
-[wrong3, ~, ~] = results(answers3, l_train', 'One-v-One PCA Data Unscaled', 'onevonepca');
+[~, ~, ~, answers3] = one_v_one_svm_test(one_v_one_svm_pca, faces_coeff_test, svmtestpref);
+[wrong3, ~, ~] = results(answers3, l_test', 'One-v-One PCA Data Unscaled', 'onevonepca');
 
 
 disp('PCA WITH TESTING SCALED')
-[~, ~, ~, answers4] = one_v_one_svm_test(one_v_one_svm_pca_scaled, faces_coeff_training_scaled, svmtestpref);
-[wrong4, ~, ~] = results(answers4, l_train', 'One-v-One PCA Data Scaled', 'onevonepcascaled');
+[~, ~, ~, answers4] = one_v_one_svm_test(one_v_one_svm_pca_scaled, faces_coeff_test_scaled, svmtestpref);
+[wrong4, ~, ~] = results(answers4, l_test', 'One-v-One PCA Data Scaled', 'onevonepcascaled');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
