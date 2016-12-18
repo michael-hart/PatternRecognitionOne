@@ -1,5 +1,7 @@
 % Test ALL variations of SVMs and output to CSV
 
+clear
+
 % We want to write each line to a CSV
 % First we're going to write the columns
 % partition-type, kernel-type, kernel-param, 1vWhat, scaling, raw/pca, 
@@ -16,26 +18,45 @@ headings = ['Partition Type,Kernel Type,Kernel Parameter,' ...
 fwrite(handle, headings);
 fclose(handle);
 
-% First test is raw, unscaled, linear.
+% Split the data in the usual way; this gives 0.7 split
+generate_partitioned('face.mat', false, false);
+load(strjoin({res_path 'partitioned.mat'}, filesep));
+part_type = '0.7';
+
+% Test list is as follows
 % 0.7, linear, N/A, 1v1, unscaled, raw.
 % 0.7, linear, N/A, 1v1, scaled, raw.
 % 0.7, linear, N/A, 1vr, unscaled, raw.
 % 0.7, linear, N/A, 1vr, scaled, raw.
+% Find the BEST kernel with default params
+%    0.7, <others>, <default_params>, 1v1, scaled, raw.
+%    0.7, <others>, <default_params>, 1vr, scaled, raw.
+% Choose the best kernel and test the best params
+%    0.7, <best_kernel>, <various_params>, 1v1, scaled, raw.
+%    0.7, <best_kernel>, <various_param>, 1vr, scaled, raw.
+%    NOTE that we don't know what params to test until best_kernel is
+%    determined.
+%
+% PCA is considered to be a desparate set of tests
 % 0.7, linear, N/A, 1v1, scaled, pca.
 % 0.7, linear, N/A, 1vr, scaled, pca.
+%
 % Same, but with other kernels
-%    0.7, <others>, <some_params>, 1v1, scaled, raw.
-%    0.7, <others>, <some_params>, 1vr, scaled, pca.
+%    0.7, <others>, <default_params>, 1v1, scaled, pca.
+%    0.7, <others>, <default_params>, 1vr, scaled, pca.
+% Again, choose the best kernel and test for the best params
+%    0.7, <best_kernel>, <various_params>, 1v1, scaled, pca.
+%    0.7, <best_kernel>, <various_param>, 1vr, scaled, pca.
+%    NOTE that we don't know what params to test until best_kernel is
+%    determined.
 
-% How to use cross validation on these? This seems to be a parameter of the
-% training, such that adding -v n will cross-validate.
-% It appears to be that if we vary the parameters ourselves, we can cross
-% validate by looking at the results of the experiment
+% Cross validation - we're NOT doing it for the moment, but we will discuss
+% it in the results as to why (not)
 
-% Kernel types: 
-%  Linear
+% Other kernel types list: 
 %  Polynomial (uses gamma, degree)
 %  Radial Basis (uses gamma)
 %  Sigmoid (uses gamma, coef0)
-%  Precomputed (uses training_set_file)
 % -c is cost, which is used in C-SVC, epsilon-SVR, nu-SVR
+
+% 0.7, linear, N/A, 1v1, unscaled, raw.
