@@ -18,12 +18,18 @@ slprj/
 # Session info
 octave-workspace
 
-# PR Tutorial stuff
+# Folder contain relevant files for each person, but not the repo. 
 misc
 
-# Large files
+# Large files, with the exception of the data given.
 *.mat
 !res/face.mat
 
-#Pictures are generatable on each local machine. As and when needed. 
+# Pictures are generatable on each local machine. As and when needed. 
 *.png
+
+# TeX output related files, with the exception of the actual .tex file. Also a typesetting script for Meng, who (in the third person) used it.
+main.*
+!main.tex
+typeset.sh
+
