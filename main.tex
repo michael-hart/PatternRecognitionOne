@@ -21,11 +21,14 @@
 
 %% Packages for displaying source code
 \usepackage{listings}
-\usepackage{matlab-prettifier}
 % \usepackage[framed,numbered,autolinebreaks,useliterate]{mcode}
 
 \usepackage{float}
+\usepackage{longtable}
 
+%% Packages for displaying source code
+\usepackage[numbered,framed]{matlab-prettifier}
+\usepackage{color}
 
 %%*************************************************************************
 %% Legal Notice:
@@ -60,7 +63,7 @@
 %-------------------------------------------------------------------------------
 
 \begin{document}
-\title{Pattern Recognition - PCA and SVM for Facial Recognition}
+\title{Pattern Recognition - PCA and SVM for Face Recognition}
 \author{Michael~Hart and
         Meng~Kiang~Seah
 \\
@@ -288,6 +291,7 @@ The second is to consider the amount of memory required for each method. This is
 
 While with ATA, there are the additional steps of multiplying the vectors by $A$ again, and normalising the columns, testing in MATLAB shows the time taken for these additional steps are negligible compared the time for the \texttt{eig} function.
 
+<<<<<<< HEAD
 In short, the smaller size of ATA means that less memory is required, and the computations are completed more quickly. It is therefore the better choice, and will be used for the rest of this assignment.
 
 \section{Applications of Eigenfaces}
@@ -459,25 +463,216 @@ Thus, from this the results of NN with 156 PCA bases can be investigated. Figure
 
 An example of a success is Class 26. In addition to the test pictures correctly classified each time, no other test images were classified as 26. In contrast, an example of a failure is Class 30, which was not correctly identified. And an interesting point is that Class 42 was the most guessed class, despite there being only one of the actual Class 42 pictures identified as such. An example of each of these three classes are shown in Figure \ref{fig:classpics}.
 
-What can be concluded is that Class 26 is distinctive enough that it is correctly identified, and no false negatives or positives ever happen. For Class 30, it must be similar enough to other classes and it is constantly misidentified. And finally, a lot of other classes must look like Class 42. The mustache could explain why it is the most frequent guess. Indeed, this highlights just how the problem of facial recognition can be challenging. While a human identifies a distinctive mustache, this is clearly not the case with the PCA bases. 
+What can be concluded is that Class 26 is distinctive enough that it is correctly identified, and no false negatives or positives ever happen. For Class 30, it must be similar enough to other classes and it is constantly misidentified. And finally, a lot of other classes must look like Class 42. The mustache could explain why it is the most frequent guess. Indeed, this highlights just how the problem of facial recognition can be challenging. While a human identifies a distinctive mustache, this is clearly not the case with the PCA bases.
 
 \section{Mutli-class SVM for Face Recognition}
+=======
+TODO An introduction
+
+%-------------------------------------------------------------------------------
+% Eigenfaces
+%-------------------------------------------------------------------------------
+\section{Eigenfaces}
+
+\subsection{Partition Method}
+
+% Explain partition method
+Common practice with a data set when performing machine learning tasks is to divide the set into a training set and a test set. The training set is usually the same size or larger than the test set, with the purpose of using the training set to teach the machine of features to look for, and the test set to validate how effective the learning was. In the face of the face data in this report, it was decided that an algorithmic approach to splitting the data would be used to provide repeatability. A split of 70\% training to 30\% test was used, where each class was split into 7 training images and 3 test images. In this way, there would be the same number of training images per class, and there would be sufficient test data to validate after training.
+
+% Show and discuss the results of PCA, including the eigenvectors, the eigenvalues, and the mean image, how many eigenvectors with non-zero eigenvalues are obtained and how many eigenvectors are to be used for face recognition. Give insights and reasons behind your answers
+
+% Apply PCA to your training data, using the eigenvectors and eigenvalues of (1/N)ATA. Show and discuss the results in comparison to the above, including: if the eigenvectors and eigenvalues obtained are identical, what are the pros/cons of each method. Show respective measurements for your answers.
+
+% TODO check this is true - have we run the mean face program again with our reduced 70/30 split? Or is the checked in version from the 75/25?
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=\linewidth]{src/mean_face}
+  \caption{Mean Face from training set}
+  \label{fig:mean_face}
+\end{figure}
+
+
+%-------------------------------------------------------------------------------
+% Applications of Eigenfaces
+%-------------------------------------------------------------------------------
+\section{Applications of Eigenfaces}
+
+% Perform the face image reconstruction using the PCA bases learnt. Show and discuss the results, while varying the number of bases to use, including: if the reconstruction error (or the distortion measure) obtained is same as in the theory, how good the reconstruction results are for at least 3 images of your choice (e.g. from both the training and testing dataset).
+
+% Perform the PCA-based face recognition by either the NN classification method or alternative method learnt in the PCA lecture. Report and discuss, including: the recognition accuracy (success rates), example success and failure cases, the confusion matrices, time/memory (and any other aspects you observe), by varying the parameter values/experimental settings you used. Give insights and reasons behind your answers.
+
+
+%-------------------------------------------------------------------------------
+% Multi-class SVM for Face Recognition
+%-------------------------------------------------------------------------------
+\section{Multi-class SVM for Face Recognition}
+
+% I'm writing bullshit at this point because my head hurts, and expecting one of us to rewrite ALL of the discussion text. It's just a placeholder right now
+
+TODO discuss 1v1, 1vr
+TODO refer to appendix code for our implementation
+
+First, we compare raw unscaled and raw scaled for both 1v1, 1vr. This uses the linear kernel with default parameters.
+
+\begin{table}
+\centering
+\label{tbl:scaling}
+\caption{Comparison of unscaled and scaled results}
+\begin{tabular}{lllll}
+Multi-class Type & Scaling & Train (s) & Test (s) & Accuracy\\ \hline
+1v1 & unscaled & 3.0948 & 11.9803 & 0.76282\\ \hline
+1v1 & scaled & 3.8927 & 13.0467 & 0.77564\\ \hline
+1vR & unscaled & 8.4871 & 1.8692 & 0.79487\\ \hline
+1vR & scaled & 8.3609 & 2.0556 & 0.87179\\ \hline
+\end{tabular}
+\end{table}
+
+As we can see from Table \ref{tbl:scaling}, scaled data produces a more accurate result with comparable time taken, although the time taken to scale the data is not included in this calculation.
+
+Next, we consider the most efficient kernel, by comparing the four types offered by libsvm that are not precomputed, with default arguments. It is assumed that this provides an even comparison, although it is possible that a kernel that performs worse on default may perform better than all other kernels with tuned parameters.
+
+\begin{table}
+\centering
+\label{tbl:kernel_raw}
+\caption{Comparison of kernels with default arguments using raw scaled data}
+\begin{tabular}{lllll}
+Kernel Type & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
+linear & 1v1 & 3.8927 & 13.0467 & 0.77564\\ \hline
+linear & 1vR & 8.3609 & 2.0556 & 0.87179\\ \hline
+polynomial & 1v1 & 3.5697 & 16.8125 & 0.20513\\ \hline
+polynomial & 1vR & 22.6973 & 7.4879 & 0.66667\\ \hline
+radial & 1v1 & 3.7123 & 20.2153 & 0.61538\\ \hline
+radial & 1vR & 13.7904 & 4.0895 & 0.77564\\ \hline
+sigmoid & 1v1 & 3.1532 & 13.591 & 0.49359\\ \hline
+sigmoid & 1vR & 5.9455 & 1.0399 & 0.42949\\ \hline
+\end{tabular}
+\end{table}
+
+As can be seen in Table \ref{tbl:kernel_raw}, of the three most accurate results, two were obtained by the linear kernel. The third result was obtained by the radial kernel, with comparable computation time. Therefore, the linear kernel will be further investigated to find out the most efficient parameters to use. In the linear kernel, the only parameter that can be varied is the cost value for incorrect values, which affects how well-fitted the model is to the data.
+
+To investigate, a range of values were used over several orders of magnitude, as can be seen in Table \ref{tbl:linear_params}.
+
+\begin{table}
+\centering
+\label{tbl:linear_params}
+\caption{Comparison of cost value with linear kernel using raw scaled data}
+\begin{tabular}{lllll}
+Cost Value & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
+% Deliberately used way too many values, I figure we can delete to the interesting few and refer to the appendix for the rest (if we choose to keep the appendix, there's an awful lot there)
+0.0001 & 1v1 & 3.4176 & 16.7002 & 0.42308\\ \hline
+0.0005 & 1v1 & 3.7042 & 13.5209 & 0.65385\\ \hline
+0.001 & 1v1 & 4.0673 & 12.7367 & 0.76923\\ \hline
+0.005 & 1v1 & 3.7783 & 12.5276 & 0.77564\\ \hline
+0.01 & 1v1 & 3.7647 & 12.5884 & 0.77564\\ \hline
+0.05 & 1v1 & 3.7463 & 12.3063 & 0.77564\\ \hline
+0.1 & 1v1 & 3.871 & 12.4042 & 0.77564\\ \hline
+0.5 & 1v1 & 3.659 & 12.4647 & 0.77564\\ \hline
+1 & 1v1 & 3.7817 & 12.4829 & 0.77564\\ \hline
+5 & 1v1 & 3.7701 & 12.5589 & 0.77564\\ \hline
+10 & 1v1 & 3.6937 & 12.5284 & 0.77564\\ \hline
+50 & 1v1 & 3.7575 & 12.8265 & 0.77564\\ \hline
+100 & 1v1 & 3.9003 & 12.4283 & 0.77564\\ \hline
+500 & 1v1 & 3.7964 & 12.3649 & 0.77564\\ \hline
+1000 & 1v1 & 3.7596 & 12.4408 & 0.77564\\ \hline
+5000 & 1v1 & 3.8467 & 12.5773 & 0.77564\\ \hline
+10000 & 1v1 & 3.8131 & 12.4916 & 0.77564\\ \hline
+50000 & 1v1 & 3.6352 & 12.6142 & 0.77564\\ \hline
+0.0001 & 1vr & 8.1454 & 1.9247 & 0.82692\\ \hline
+0.0005 & 1vr & 7.8149 & 1.9132 & 0.82692\\ \hline
+0.001 & 1vr & 7.8003 & 1.9665 & 0.86538\\ \hline
+0.005 & 1vr & 8.0325 & 2.0027 & 0.87179\\ \hline
+0.01 & 1vr & 8.0002 & 2.0105 & 0.87179\\ \hline
+0.05 & 1vr & 8.0123 & 2.0087 & 0.87179\\ \hline
+0.1 & 1vr & 8.0213 & 2.01 & 0.87179\\ \hline
+0.5 & 1vr & 7.9881 & 2.0267 & 0.87179\\ \hline
+1 & 1vr & 8.0264 & 2.0479 & 0.87179\\ \hline
+5 & 1vr & 7.9924 & 2.0216 & 0.87179\\ \hline
+10 & 1vr & 7.9859 & 2.0153 & 0.87179\\ \hline
+50 & 1vr & 8.0526 & 2.005 & 0.87179\\ \hline
+100 & 1vr & 7.9783 & 2.0271 & 0.87179\\ \hline
+500 & 1vr & 8.0035 & 2.0137 & 0.87179\\ \hline
+1000 & 1vr & 8.0447 & 2.0237 & 0.87179\\ \hline
+5000 & 1vr & 8.0123 & 2.0206 & 0.87179\\ \hline
+10000 & 1vr  & 8.014 & 2.026 & 0.87179\\ \hline
+50000 & 1vr  & 7.985 & 2.0196 & 0.87179\\ \hline
+\end{tabular}
+\end{table}
+
+As seen in Table \ref{tbl:linear_params}, as soon as the cost rises about 0.001 in either case, the result is the same over several orders of magnitude. As a lower cost value results in an overfitted model, the very small cost values show an overfitted model; the fact that the accuracy saturates above 0.001 shows that underfitting does not significantly affect the accuracy of the model.
+
+This concluded investigation of the raw data. Next was PCA. As scaled was more successful in raw data, we assume that scaled is also more effective in PCA, which is fair because I bloody well say so. Instead, we skipped straight to the kernel comparisons.
+
+\begin{table}
+\centering
+\label{tbl:kernel_pca}
+\caption{Comparison of kernels with default arguments using scaled PCA coefficients}
+\begin{tabular}{lllll}
+Kernel Type & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
+linear & 1v1 & 0.69941 & 2.3322 & 0.75641\\ \hline
+linear & 1vr & 5.0414 & 1.9933 & 0.75\\ \hline
+polynomial & 1v1 & 0.72556 & 2.3872 & 0.083333\\ \hline
+polynomial & 1vr & 5.2908 & 2.5659 & 0.64103\\ \hline
+radial & 1v1 & 0.71748 & 3.0122 & 0.75641\\ \hline
+radial & 1vr & 5.7246 & 2.7747 & 0.75641\\ \hline
+sigmoid & 1v1 & 0.66103 & 2.5631 & 0.75641\\ \hline
+sigmoid & 1vr & 4.569 & 1.8432 & 0.76923\\ \hline
+\end{tabular}
+\end{table}
+
+This shows a surprising difference to the results in Table \ref{tbl:kernel_raw}, as in Table \ref{tbl:kernel_pca}, the most accurate results are obtained by the sigmoid kernel function.
+
+The sigmoid kernel is calculated using two parameters that the linear function does not need, labelled gamma and coef0. The coefficients were investigated in the range -1.5 to 1.5 in steps of 0.5, cost over a restricted range of several orders of magnitude, and the gamma as several orders of magnitude all divided by the number of features.
+
+% I don't know how to do this one. There is a fucking butt ton of data. Probably we should just skim for interesting results. I'll put a single line placeholder in for now.
+
+% This sticks out over the edge of the column. Think it's the title of multi-class type.
+\begin{table}
+\centering
+\label{tbl:sigmoid_params}
+\caption{Comparison of parameters with sigmoid kernel using scaled PCA coefficients}
+\begin{tabular}{lllllll}
+Cost & Gamma & Coef0 & MC Type & Train (s) & Test (s) & Accuracy\\ \hline
+0.1 & 0.00027 & -1.5 & 1v1 & 0.64037 & 2.5146 & 0.75641\\ \hline
+\end{tabular}
+\end{table}
+
+Now refer to something interesting from Table \ref{tbl:sigmoid_params}.
 
 %-------------------------------------------------------------------------------
 % Conclusion
 %-------------------------------------------------------------------------------
 \section{Conclusion}
-
 A conclusion.
+
 
 \bibliographystyle{unsrt}
 \bibliography{pr_refs}
 
-\section{Appendix}
+
+%-------------------------------------------------------------------------------
+% Appendix A - Results of SVM Training
+%-------------------------------------------------------------------------------
+
+\clearpage
+\onecolumn
+\section{Appendix A - Results of SVM Training}
+
+% Efficiency values are calculated using eff = (t_test / t_train) *acc
+% I'm sure this is wrong because an SVM that takes longer to test is considered more efficient
+% Perhaps we can use eff = acc / (t_test * t_train) ? That punishes inaccuracy, testing time, and training time, but does have units 1/s^2
+% I have an uncommitted results .csv file and a python file to process the results into a LaTeX formatted table. We can change the equation in there. Let me know if you want me to send you them, or I'm happy to just update svm_res as required
+
+\include{svm_res}
+
+%-------------------------------------------------------------------------------
+% Appendix B - Source Code
+%-------------------------------------------------------------------------------
+
+\section{Appendix B - Source Code}
 
 This section is for displaying source code only.\\
 % Put all code files here. Note that hyperlinks do not work :(
-% \subsection*{one\_v\_one\_generate.m}
-% \lstinputlisting{https://raw.githubusercontent.com/michael-hart/PatternRecognitionOne/master/src/one_v_one_generate.m}
+\subsection*{one\_v\_one\_generate.m}
+\lstinputlisting[style=Matlab-editor]{src/one_v_one_generate.m}
 
 \end{document}
