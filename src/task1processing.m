@@ -92,7 +92,7 @@ end
 
 % Show and save 4 eigenfaces, S=ATA.
 for index = 4:7
-    show_face(S2_eig_vec_adj(:, index - 3c));
+    show_face(S2_eig_vec_adj(:, index - 3));
     fig = gcf;
     fig.PaperPositionMode = 'auto';
     name = ['eigface', num2str(index)];
