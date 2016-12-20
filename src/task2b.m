@@ -11,7 +11,7 @@ P = size(test, 2);
 B = test - average_face(:, ones(1,P));
 
 % Initialise for speed
-all_guesses = zeros(P, 3 * N);
+all_guesses = zeros(P, 3, N);
 correct_vec = zeros(N, 1);
 incorrect_vec = zeros(N, 1);
 timings = zeros(N, 1);
@@ -49,7 +49,7 @@ for M = 1:N
     
      % Keep
     timings(M) = toc;
-    all_guesses(:, (3 * M - 2):(3 * M)) = guesses;
+    all_guesses(:, :, M) = guesses;
     correct = sum(guesses(:, 1));
     incorrect = P - correct;
     correct_vec(M) = correct;
