@@ -467,20 +467,54 @@ An example of a success is Class 26. In addition to the test pictures correctly 
 What can be concluded is that Class 26 is distinctive enough that it is correctly identified, and no false negatives or positives ever happen. For Class 30, it must be similar enough to other classes and it is constantly misidentified. And finally, a lot of other classes must look like Class 42. The mustache could explain why it is the most frequent guess. Indeed, this highlights just how the problem of facial recognition can be challenging. While a human identifies a distinctive mustache, this is clearly not the case with the PCA bases.
 
 \section{Mutli-class SVM for Face Recognition}
+\subsection{One Versus Rest and One Versus One}
+\subsubsection{1VR}
+To apply the SVM method to a multi-class problem, as mentioned in Section \ref{sec:svmtheory}, one method is to use one-versus-rest (1VR). This involves training as many SVMs as class, each tailored to a class. The code used is in Appendix A.
+
+In 1VR, one class in the training set is assigned to the positive label, and all the other training pictures are assigned the negative label. Then the SVM is trained on that set of data. This is repeated for each of the 52 classes in the training data. 52 SVMs are thus created. To test the data, each testing picture is run through all the 52 SVMs. Ideally, for each picture, a single SVM will classify it as a positive, and the picture will be assigned that class.
+
+However, instead of taking the SVMs' positive or negative decision, the raw decision values were considered. This was because it was discovered that occasionally, a test picture could return a negative from each SVM, or (more rarely), a positive decision from more than one SVM. Thus, the method used was to select the associated class of the SVM that returned the highest raw decision value.
+
+\subsubsection{1V1}
+The second method was one-versus-one (1V1). This involves training each class against each other one. One class in the training set is assigned the positive class, and the data is combined with another class that is assigned the negative set. The SVM is trained on this set. This is repeated for each of the possible pairs, resulting in the 1326 SVMs.
+
+To test, each picture was run through all the SVMs. Each SVM produced a decision (positive or negative) and this was converted into a vote for a class. The votes were collected, and the testing picture was assigned the class with the most number of votes.
+
+% \subsubsection{Parameters Explored}
+% With SVMs, there are many factors to explore. In this section, data type (raw or PCA coefficients), scaling, and kernel type are investigated, in addition to using both multi-class methods. At first, the
+
+\subsection{Scaled and Unscaled Data}
+
+% >> one_v_rest_test
+% RAW WITH TESTING UNSCALED
+% Guessed 124 correctly and 32 incorrectly; Success rate is 79.4872%.
+% RAW WITH TESTING SCALED
+% Guessed 136 correctly and 20 incorrectly; Success rate is 87.1795%.
+% PCA WITH TESTING UNSCALED
+% Guessed 123 correctly and 33 incorrectly; Success rate is 78.8462%.
+% PCA WITH TESTING SCALED
+% Guessed 118 correctly and 38 incorrectly; Success rate is 75.641%.
+% >> one_v_one_test
+% RAW WITH TESTING UNSCALED
+% Guessed 119 correctly and 37 incorrectly; Success rate is 76.2821%.
+% RAW WITH TESTING SCALED
+% Guessed 121 correctly and 35 incorrectly; Success rate is 77.5641%.
+% PCA WITH TESTING UNSCALED
+% Guessed 119 correctly and 37 incorrectly; Success rate is 76.2821%.
+% PCA WITH TESTING SCALED
+% Guessed 120 correctly and 36 incorrectly; Success rate is 76.9231%.
 
 % I'm writing bullshit at this point because my head hurts, and expecting one of us to rewrite ALL of the discussion text. It's just a placeholder right now
 
-TODO discuss 1v1, 1vr
-TODO refer to appendix code for our implementation
+In this section, the \texttt{svmtrain} function is run with all its default values, with the exception of the kernel. In situations where the number of dimensions exceeds the number of training instances considerably, the linear kernel is considered to have comparable performance to the RBF kernel, which is the default \cite{linear}. The advantage, according to the same source, is that it computes much faster. Thus, for the time being, the linear kernel is used to facilitate investigation of other factors.
 
-First, we compare raw unscaled and raw scaled for both 1v1, 1vr. This uses the linear kernel with default parameters.
+The data was scaled by standardising all the testing and training data across each dimension. This means each dimension's inputs are zero-mean and unit standard deviation. The reason for this is that if a certain dimension's inputs are in a greater range, it will cause the SVM to consider it as more important that others \cite{scale} \cite{linear}. In this case, with pictures, while the pixel values will be intensity numbers within a certain range, certain pixels may experience greater variation across pictures.
 
-\begin{table}
+\begin{table}[!ht]
 \centering
-\label{tbl:scaling}
-\caption{Comparison of unscaled and scaled results}
+\caption{Comparison of unscaled and scaled results} \label{tbl:scaling}
 \begin{tabular}{lllll}
-Multi-class Type & Scaling & Train (s) & Test (s) & Accuracy\\ \hline
+\textbf{Multi-class Type} & \textbf{Scaling} & \textbf{Train (s)} & \textbf{Test (s)} & \textbf{Accuracy}\\ \hline
 1v1 & unscaled & 3.0948 & 11.9803 & 0.76282\\ \hline
 1v1 & scaled & 3.8927 & 13.0467 & 0.77564\\ \hline
 1vR & unscaled & 8.4871 & 1.8692 & 0.79487\\ \hline
@@ -488,16 +522,43 @@ Multi-class Type & Scaling & Train (s) & Test (s) & Accuracy\\ \hline
 \end{tabular}
 \end{table}
 
-As we can see from Table \ref{tbl:scaling}, scaled data produces a more accurate result with comparable time taken, although the time taken to scale the data is not included in this calculation.
+As can be seen from Table \ref{tbl:scaling}, scaled data produces a more accurate result with comparable time taken for training and testing, although the time taken to scale the data is not included in this calculation. Nevertheless, for both types of multi-class implementation, scaling does indeed improve performance, as expected.
 
-Next, we consider the most efficient kernel, by comparing the four types offered by libsvm that are not precomputed, with default arguments. It is assumed that this provides an even comparison, although it is possible that a kernel that performs worse on default may perform better than all other kernels with tuned parameters.
+Figure \ref{fig:svmconfuse} shows the confusion matrices for the different cases. And comparing the various images with the confusion matrix from the PCA system in Figure \ref{fig:confusepca} shows just how much more consistent the diagonal is, demonstrating the improvement in classification after moving from PCA to SVM. Unfortunately, while confusion matrices are a colorful way to present our data, space constraints mean that for future scenarios, only the accuracy and times will be shown.
 
-\begin{table}
+\begin{figure}[!ht]
+	\captionsetup[subfigure]{position=b}
+        \centering
+        \begin{subfigure}{0.2\textwidth}
+                \includegraphics[width=\textwidth]{src/1v1_raw_unscaled.png}
+                \caption{1V1, raw unscaled data.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}{0.2\textwidth}
+          \includegraphics[width=\textwidth]{src/1v1_raw_scaled.png}
+          \caption{1V1, raw scaled data.}
+        \end{subfigure}
+        \\
+        \begin{subfigure}{0.2\textwidth}
+          \includegraphics[width=\textwidth]{src/1vr_raw_unscaled.png}
+          \caption{1VR, raw unscaled data.}
+        \end{subfigure}
+        ~
+        \begin{subfigure}{0.2\textwidth}
+          \includegraphics[width=\textwidth]{src/1vr_raw_scaled.png}
+          \caption{1VR, raw scaled data.}
+        \end{subfigure}
+	\caption{Confusion matrices for 1VR and 1VR with scaled and unscaled data.} \label{fig:svmconfuse}
+\end{figure}
+
+\subsection{Kernel Type}
+This section contains the results obtained by comparing the four types of kernels offered by \texttt{libsvm} that are not precomputed, with default arguments. It is assumed that this provides an even comparison, although it is possible that a kernel that performs worse on default may perform better than all other kernels with tuned parameters.
+
+\begin{table}[!ht]
 \centering
-\label{tbl:kernel_raw}
-\caption{Comparison of kernels with default arguments using raw scaled data}
+\caption{Comparison of kernels with default arguments using raw scaled data}\label{tbl:kernel_raw}
 \begin{tabular}{lllll}
-Kernel Type & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
+\textbf{Kernel Type} & \textbf{Multi-class Type} & \textbf{Train (s)} & \textbf{Test (s)} & \textbf{Accuracy}\\ \hline
 linear & 1v1 & 3.8927 & 13.0467 & 0.77564\\ \hline
 linear & 1vR & 8.3609 & 2.0556 & 0.87179\\ \hline
 polynomial & 1v1 & 3.5697 & 16.8125 & 0.20513\\ \hline
@@ -509,64 +570,64 @@ sigmoid & 1vR & 5.9455 & 1.0399 & 0.42949\\ \hline
 \end{tabular}
 \end{table}
 
-As can be seen in Table \ref{tbl:kernel_raw}, of the three most accurate results, two were obtained by the linear kernel. The third result was obtained by the radial kernel, with comparable computation time. Therefore, the linear kernel will be further investigated to find out the most efficient parameters to use. In the linear kernel, the only parameter that can be varied is the cost value for incorrect values, which affects how well-fitted the model is to the data.
+As can be seen in Table \ref{tbl:kernel_raw}, of the three most accurate results, two were obtained by the linear kernel. The third result was obtained by the radial kernel, with comparable computation time. Therefore, the linear kernel will be further investigated to find out the most efficient parameters to use. This seems in line with what the SVM Guide \cite{linear} had stated, given the ratios of dimensions to instances.
 
-To investigate, a range of values were used over several orders of magnitude, as can be seen in Table \ref{tbl:linear_params}.
+\subsection{Kernel Parameters}
+In the linear kernel, the only parameter that can be varied is the cost value for incorrect values ($C$), which affects how well-fitted the model is to the data. This means that as $C$ grows, the model is penalised more for complexity, while a smaller $C$ value does the opposite. To investigate, a range of values were used over several orders of magnitude.
 
-\begin{table}
+\begin{table}[!ht]
 \centering
-\label{tbl:linear_params}
-\caption{Comparison of cost value with linear kernel using raw scaled data}
+\caption{Comparison of cost value with linear kernel using raw scaled data}\label{tbl:linear_params}
 \begin{tabular}{lllll}
-Cost Value & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
+\textbf{Cost Value} & \textbf{Multi-class Type} & \textbf{Train (s)} & \textbf{Test (s)} & \textbf{Accuracy}\\ \hline
 % Deliberately used way too many values, I figure we can delete to the interesting few and refer to the appendix for the rest (if we choose to keep the appendix, there's an awful lot there)
 0.0001 & 1v1 & 3.4176 & 16.7002 & 0.42308\\ \hline
-0.0005 & 1v1 & 3.7042 & 13.5209 & 0.65385\\ \hline
-0.001 & 1v1 & 4.0673 & 12.7367 & 0.76923\\ \hline
-0.005 & 1v1 & 3.7783 & 12.5276 & 0.77564\\ \hline
+% 0.0005 & 1v1 & 3.7042 & 13.5209 & 0.65385\\ \hline
+% 0.001 & 1v1 & 4.0673 & 12.7367 & 0.76923\\ \hline
+% 0.005 & 1v1 & 3.7783 & 12.5276 & 0.77564\\ \hline
 0.01 & 1v1 & 3.7647 & 12.5884 & 0.77564\\ \hline
-0.05 & 1v1 & 3.7463 & 12.3063 & 0.77564\\ \hline
-0.1 & 1v1 & 3.871 & 12.4042 & 0.77564\\ \hline
-0.5 & 1v1 & 3.659 & 12.4647 & 0.77564\\ \hline
+% 0.05 & 1v1 & 3.7463 & 12.3063 & 0.77564\\ \hline
+% 0.1 & 1v1 & 3.871 & 12.4042 & 0.77564\\ \hline
+% 0.5 & 1v1 & 3.659 & 12.4647 & 0.77564\\ \hline
 1 & 1v1 & 3.7817 & 12.4829 & 0.77564\\ \hline
-5 & 1v1 & 3.7701 & 12.5589 & 0.77564\\ \hline
-10 & 1v1 & 3.6937 & 12.5284 & 0.77564\\ \hline
-50 & 1v1 & 3.7575 & 12.8265 & 0.77564\\ \hline
+% 5 & 1v1 & 3.7701 & 12.5589 & 0.77564\\ \hline
+% 10 & 1v1 & 3.6937 & 12.5284 & 0.77564\\ \hline
+% 50 & 1v1 & 3.7575 & 12.8265 & 0.77564\\ \hline
 100 & 1v1 & 3.9003 & 12.4283 & 0.77564\\ \hline
-500 & 1v1 & 3.7964 & 12.3649 & 0.77564\\ \hline
-1000 & 1v1 & 3.7596 & 12.4408 & 0.77564\\ \hline
-5000 & 1v1 & 3.8467 & 12.5773 & 0.77564\\ \hline
+% 500 & 1v1 & 3.7964 & 12.3649 & 0.77564\\ \hline
+% 1000 & 1v1 & 3.7596 & 12.4408 & 0.77564\\ \hline
+% 5000 & 1v1 & 3.8467 & 12.5773 & 0.77564\\ \hline
 10000 & 1v1 & 3.8131 & 12.4916 & 0.77564\\ \hline
-50000 & 1v1 & 3.6352 & 12.6142 & 0.77564\\ \hline
+% 50000 & 1v1 & 3.6352 & 12.6142 & 0.77564\\ \hline
 0.0001 & 1vr & 8.1454 & 1.9247 & 0.82692\\ \hline
-0.0005 & 1vr & 7.8149 & 1.9132 & 0.82692\\ \hline
-0.001 & 1vr & 7.8003 & 1.9665 & 0.86538\\ \hline
-0.005 & 1vr & 8.0325 & 2.0027 & 0.87179\\ \hline
+% 0.0005 & 1vr & 7.8149 & 1.9132 & 0.82692\\ \hline
+% 0.001 & 1vr & 7.8003 & 1.9665 & 0.86538\\ \hline
+% 0.005 & 1vr & 8.0325 & 2.0027 & 0.87179\\ \hline
 0.01 & 1vr & 8.0002 & 2.0105 & 0.87179\\ \hline
-0.05 & 1vr & 8.0123 & 2.0087 & 0.87179\\ \hline
-0.1 & 1vr & 8.0213 & 2.01 & 0.87179\\ \hline
-0.5 & 1vr & 7.9881 & 2.0267 & 0.87179\\ \hline
+% 0.05 & 1vr & 8.0123 & 2.0087 & 0.87179\\ \hline
+% 0.1 & 1vr & 8.0213 & 2.01 & 0.87179\\ \hline
+% 0.5 & 1vr & 7.9881 & 2.0267 & 0.87179\\ \hline
 1 & 1vr & 8.0264 & 2.0479 & 0.87179\\ \hline
-5 & 1vr & 7.9924 & 2.0216 & 0.87179\\ \hline
-10 & 1vr & 7.9859 & 2.0153 & 0.87179\\ \hline
-50 & 1vr & 8.0526 & 2.005 & 0.87179\\ \hline
+% 5 & 1vr & 7.9924 & 2.0216 & 0.87179\\ \hline
+% 10 & 1vr & 7.9859 & 2.0153 & 0.87179\\ \hline
+% 50 & 1vr & 8.0526 & 2.005 & 0.87179\\ \hline
 100 & 1vr & 7.9783 & 2.0271 & 0.87179\\ \hline
-500 & 1vr & 8.0035 & 2.0137 & 0.87179\\ \hline
-1000 & 1vr & 8.0447 & 2.0237 & 0.87179\\ \hline
-5000 & 1vr & 8.0123 & 2.0206 & 0.87179\\ \hline
+% 500 & 1vr & 8.0035 & 2.0137 & 0.87179\\ \hline
+% 1000 & 1vr & 8.0447 & 2.0237 & 0.87179\\ \hline
+% 5000 & 1vr & 8.0123 & 2.0206 & 0.87179\\ \hline
 10000 & 1vr  & 8.014 & 2.026 & 0.87179\\ \hline
-50000 & 1vr  & 7.985 & 2.0196 & 0.87179\\ \hline
+% 50000 & 1vr  & 7.985 & 2.0196 & 0.87179\\ \hline
 \end{tabular}
 \end{table}
 
-As seen in Table \ref{tbl:linear_params}, as soon as the cost rises about 0.001 in either case, the result is the same over several orders of magnitude. As a lower cost value results in an overfitted model, the very small cost values show an overfitted model; the fact that the accuracy saturates above 0.001 shows that underfitting does not significantly affect the accuracy of the model.
+As seen in Table \ref{tbl:linear_params}, as soon as $C$ rises about 0.001 in either case, the accuracy no longer changes. As a lower cost value results in an overfitted model, the very small cost values show an overfitted model; the fact that the accuracy saturates above 0.001 shows that underfitting does not significantly affect the accuracy of the model. Overall, it appears that the value of $C$ has no impact on the time taken.
 
-This concluded investigation of the raw data. Next was PCA. As scaled was more successful in raw data, we assume that scaled is also more effective in PCA, which is fair because I bloody well say so. Instead, we skipped straight to the kernel comparisons.
+\subsection{PCA Data}
+Following the investigation of  As scaled was more successful in raw data, we assume that scaled is also more effective in PCA, which is fair because I bloody well say so. Instead, we skipped straight to the kernel comparisons.
 
-\begin{table}
+\begin{table}[!ht]
 \centering
-\label{tbl:kernel_pca}
-\caption{Comparison of kernels with default arguments using scaled PCA coefficients}
+\caption{Comparison of kernels with default arguments using scaled PCA coefficients}\label{tbl:kernel_pca}
 \begin{tabular}{lllll}
 Kernel Type & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
 linear & 1v1 & 0.69941 & 2.3322 & 0.75641\\ \hline
@@ -587,10 +648,9 @@ The sigmoid kernel is calculated using two parameters that the linear function d
 % I don't know how to do this one. There is a fucking butt ton of data. Probably we should just skim for interesting results. I'll put a single line placeholder in for now.
 
 % This sticks out over the edge of the column. Think it's the title of multi-class type.
-\begin{table}
+\begin{table}[!ht]
 \centering
-\label{tbl:sigmoid_params}
-\caption{Comparison of parameters with sigmoid kernel using scaled PCA coefficients}
+\caption{Comparison of parameters with sigmoid kernel using scaled PCA coefficients}\label{tbl:sigmoid_params}
 \begin{tabular}{lllllll}
 Cost & Gamma & Coef0 & MC Type & Train (s) & Test (s) & Accuracy\\ \hline
 0.1 & 0.00027 & -1.5 & 1v1 & 0.64037 & 2.5146 & 0.75641\\ \hline
@@ -603,37 +663,45 @@ Now refer to something interesting from Table \ref{tbl:sigmoid_params}.
 % Conclusion
 %-------------------------------------------------------------------------------
 \section{Conclusion}
-A conclusion.
-
+A conclusion. Weighting data in 1vR. Cross-validation?
 
 \bibliographystyle{unsrt}
 \bibliography{pr_refs}
 
-
-%-------------------------------------------------------------------------------
-% Appendix A - Results of SVM Training
-%-------------------------------------------------------------------------------
-
 \clearpage
 \onecolumn
-\section{Appendix A - Results of SVM Training}
+
+%-------------------------------------------------------------------------------
+% Appendix A - Source Code
+%-------------------------------------------------------------------------------
+
+\section*{Appendix A - Source Code}
+
+This section contains the functions used to generate and test the multi-class SVMs.
+% Put all code files here. Note that hyperlinks do not work :(
+\subsection*{Generation Function for 1VR SVMs}
+\lstinputlisting[style=Matlab-editor]{src/one_v_rest_svm.m}
+\newpage
+\subsection*{Test Function for 1VR SVMs}
+\lstinputlisting[style=Matlab-editor]{src/one_v_rest_svm_test.m}
+\newpage
+\subsection*{Generation Function for 1V1 SVMs}
+\lstinputlisting[style=Matlab-editor]{src/one_v_one_svm.m}
+\newpage
+\subsection*{Test Function for 1V1 SVMs}
+\lstinputlisting[style=Matlab-editor]{src/one_v_one_svm_test.m}
+
+%-------------------------------------------------------------------------------
+% Appendix B - Results of SVM Training
+%-------------------------------------------------------------------------------
+
+% \section*{Appendix B - Results of SVM Training}
 
 % Efficiency values are calculated using eff = (t_test / t_train) *acc
 % I'm sure this is wrong because an SVM that takes longer to test is considered more efficient
 % Perhaps we can use eff = acc / (t_test * t_train) ? That punishes inaccuracy, testing time, and training time, but does have units 1/s^2
 % I have an uncommitted results .csv file and a python file to process the results into a LaTeX formatted table. We can change the equation in there. Let me know if you want me to send you them, or I'm happy to just update svm_res as required
 
-\include{svm_res}
-
-%-------------------------------------------------------------------------------
-% Appendix B - Source Code
-%-------------------------------------------------------------------------------
-
-\section{Appendix B - Source Code}
-
-This section is for displaying source code only.\\
-% Put all code files here. Note that hyperlinks do not work :(
-\subsection*{one\_v\_one\_generate.m}
-\lstinputlisting[style=Matlab-editor]{src/one_v_one_generate.m}
+% \include{svm_res}
 
 \end{document}
