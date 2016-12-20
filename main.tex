@@ -120,11 +120,9 @@ The second is one-versus-one, which trains each class against every other class.
 % Introduce the concepts of PCA, SVMs, and classifiers in general
 %
 \section{Data Partitioning}
-\todo{Too casual? ADD SOURCES}
+Common practice with a data set when performing machine learning tasks is to divide the set into a training set and a test set. A number of online sources discuss the size and ratios of partitioning data for training and testing. They propose a range that extends from a 60\% training to 40\% testing ratio to one of 80\% to 20\%, but most seem to agree on a 70\%-30\% split. Closer inspection of the data given to us in \texttt{face.math} shows that there are 520 pictures and 52 different classes. For each class, or each person, there are 10 images.
 
-Common practice with a data set when performing machine learning tasks is to divide the set into a training set and a test set. A number of literature sources discuss the size and ratios of partitioning data for training and testing. They propose a range that extends from a 60\% training to 40\% testing ratio to one of 80\% to 20\%. Closer inspection of the data given to us in \texttt{face.math} shows that there are 520 pictures and 52 different classes. For each class, or each person, there are 10 images.
-
-Weighing the need for enough training instances with enough testing instances, a split of 70\% training to 30\% test was used, where each class was split into 7 training images and 3 test images. In this way, there would be the same number of training images per class, and there would be sufficient test data to validate after training. The 3 testing instances were the 8th, 9th and 10th instances. As there is no ordering to the pictures in each class, there is no chance of an accidental bias.
+Weighing the need for enough training instances with enough testing instances, a split of 70\% training to 30\% test was indeed used, where each class was split into 7 training images and 3 test images. In this way, there would be the same number of training images per class, and there would be sufficient test data to validate after training. The 3 testing instances were the 8th, 9th and 10th instances. As there is no ordering to the pictures in each class, there is no chance of an accidental bias.
 
 This gives us 364 training instances with 156 testing ones. This partitioning is used for the remainder of this assignment.
 
@@ -529,22 +527,22 @@ Figure \ref{fig:svmconfuse} shows the confusion matrices for the different cases
 \begin{figure}[!ht]
 	\captionsetup[subfigure]{position=b}
         \centering
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.23\textwidth}
                 \includegraphics[width=\textwidth]{src/1v1_raw_unscaled.png}
                 \caption{1V1, raw unscaled data.}
         \end{subfigure}
         ~
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.23\textwidth}
           \includegraphics[width=\textwidth]{src/1v1_raw_scaled.png}
           \caption{1V1, raw scaled data.}
         \end{subfigure}
         \\
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.23\textwidth}
           \includegraphics[width=\textwidth]{src/1vr_raw_unscaled.png}
           \caption{1VR, raw unscaled data.}
         \end{subfigure}
         ~
-        \begin{subfigure}{0.2\textwidth}
+        \begin{subfigure}{0.23\textwidth}
           \includegraphics[width=\textwidth]{src/1vr_raw_scaled.png}
           \caption{1VR, raw scaled data.}
         \end{subfigure}
@@ -623,13 +621,13 @@ In the linear kernel, the only parameter that can be varied is the cost value fo
 As seen in Table \ref{tbl:linear_params}, as soon as $C$ rises about 0.001 in either case, the accuracy no longer changes. As a lower cost value results in an overfitted model, the very small cost values show an overfitted model; the fact that the accuracy saturates above 0.001 shows that underfitting does not significantly affect the accuracy of the model. Overall, it appears that the value of $C$ has no impact on the time taken.
 
 \subsection{PCA Data}
-Following the investigation of  As scaled was more successful in raw data, we assume that scaled is also more effective in PCA, which is fair because I bloody well say so. Instead, we skipped straight to the kernel comparisons.
+Following the investigation of various parameters for SVMs trained and tested on raw data, the PCA coefficients were also used. From the previous section, it was seen that scaled data worked better, and thus the PCA coefficients were immediately scaled and different kernels were tested with their default values.
 
 \begin{table}[!ht]
 \centering
 \caption{Comparison of kernels with default arguments using scaled PCA coefficients}\label{tbl:kernel_pca}
 \begin{tabular}{lllll}
-Kernel Type & Multi-class Type & Train (s) & Test (s) & Accuracy\\ \hline
+\textbf{Kernel Type} & \textbf{Multi-class Type} & \textbf{Train (s)} & \textbf{Test (s)} & \textbf{Accuracy}\\ \hline
 linear & 1v1 & 0.69941 & 2.3322 & 0.75641\\ \hline
 linear & 1vr & 5.0414 & 1.9933 & 0.75\\ \hline
 polynomial & 1v1 & 0.72556 & 2.3872 & 0.083333\\ \hline
@@ -643,7 +641,7 @@ sigmoid & 1vr & 4.569 & 1.8432 & 0.76923\\ \hline
 
 This shows a surprising difference to the results in Table \ref{tbl:kernel_raw}, as in Table \ref{tbl:kernel_pca}, the most accurate results are obtained by the sigmoid kernel function.
 
-The sigmoid kernel is calculated using two parameters that the linear function does not need, labelled gamma and coef0. The coefficients were investigated in the range -1.5 to 1.5 in steps of 0.5, cost over a restricted range of several orders of magnitude, and the gamma as several orders of magnitude all divided by the number of features.
+The sigmoid kernel is calculated using two parameters that the linear function does not need, labelled \texttt{gamma} and \texttt{coef0}. The coefficients were investigated in the range -1.5 to 1.5 in steps of 0.5, cost over a restricted range of several orders of magnitude, and the gamma as several orders of magnitude all divided by the number of features.
 
 % I don't know how to do this one. There is a fucking butt ton of data. Probably we should just skim for interesting results. I'll put a single line placeholder in for now.
 
@@ -652,18 +650,25 @@ The sigmoid kernel is calculated using two parameters that the linear function d
 \centering
 \caption{Comparison of parameters with sigmoid kernel using scaled PCA coefficients}\label{tbl:sigmoid_params}
 \begin{tabular}{lllllll}
-Cost & Gamma & Coef0 & MC Type & Train (s) & Test (s) & Accuracy\\ \hline
-0.1 & 0.00027 & -1.5 & 1v1 & 0.64037 & 2.5146 & 0.75641\\ \hline
+\textbf{Cost} & \textbf{\texttt{Gamma}} & \textbf{\texttt{Coef0}} & \textbf{MC Type} & \textbf{Train (s)} & \textbf{Test (s)} & \textbf{Accuracy}\\ \hline
+5 & 0.013736 & -1 & 1vr & 5.3513 & 2.134 & 0.77564\\ \hline
+10 & 0.013736 & -1 & 1vr & 5.9747 & 2.2746 & 0.77564\\ \hline
+050 & 0.013736 & -1 & 1vr &	5.9585 & 2.2714 & 0.77564\\ \hline
+100 & 0.013736 & -1 & 1vr & 5.6929 & 2.2026 & 0.77564\\ \hline
+0.1 & 0.027473 & -1	& 1v1	& 0.71012	& 2.5408	& 0.80128\\ \hline
 \end{tabular}
 \end{table}
 
+\todo{Write a little comment about the maximum accuracy achieveable.}
 Now refer to something interesting from Table \ref{tbl:sigmoid_params}.
 
 %-------------------------------------------------------------------------------
 % Conclusion
 %-------------------------------------------------------------------------------
 \section{Conclusion}
-A conclusion. Weighting data in 1vR. Cross-validation?
+\todo{Write conclusion!}
+A conclusion. Compare PCA with SVM. (overall increase). Summarise 1v1 and 1vr with different params. Mention that weighting data in 1vR is a possiblity next time (limited space). Cross-validation also an option. Maybe vary number of bases (we used all of them in this case).
+\todo{PROOFREAD LOL}
 
 \bibliographystyle{unsrt}
 \bibliography{pr_refs}
