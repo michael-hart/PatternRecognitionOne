@@ -21,23 +21,21 @@ svmtestpref = '-q';
 
 disp('RAW WITH TESTING UNSCALED')
 [~, ~, ~, answers1] = one_v_rest_svm_test(one_v_rest_svm_raw, test', l_test', svmtestpref);
-results(answers1, l_test', 'RAW WITH TESTING UNSCALED', 'svm_raw');
+results(answers1, l_test', 'Unscaled Raw Data', '1vr_raw_unscaled');
 
 disp('RAW WITH TESTING SCALED')
 [~, ~, ~, answers2] = one_v_rest_svm_test(one_v_rest_svm_raw_scaled, test_scaled', l_test', svmtestpref);
-results(answers2, l_test', 'RAW WITH TESTING SCALED', 'svm_raw_scaled');
+results(answers2, l_test', 'Scaled Raw Data', '1vr_raw_scaled');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 disp('PCA WITH TESTING UNSCALED')
 [~, ~, ~, answers3] = one_v_rest_svm_test(one_v_rest_svm_pca, faces_coeff_test, l_test', svmtestpref);
-results(answers3, l_test', 'PCA WITH TESTING UNSCALED', 'svm_pca');
+results(answers3, l_test', 'Unscaled PCA Data', '1vr_pca_unscaled');
 
 
 disp('PCA WITH TESTING SCALED')
 [~, ~, ~, answers4] = one_v_rest_svm_test(one_v_rest_svm_pca_scaled, faces_coeff_test_scaled, l_test', svmtestpref);
-results(answers4, l_test', 'PCA WITH TESTING SCALED', 'svm_pca_scaled');
+results(answers4, l_test', 'Scaled PCA Data', '1vr_pca_scaled');
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
