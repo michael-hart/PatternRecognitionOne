@@ -48,5 +48,5 @@ for M=1:total
     avg_error_test(M) = mean(mag_error_faces_test);
 end
 
-save(strjoin({res_path 'atapca.mat'}, filesep), 'S2_eig_vec_adj', 'faces_coeff_training', 'faces_coeff_test');
+save(strjoin({res_path 'atapca.mat'}, filesep), 'S2_eig_val', 'S2_eig_vec_adj', 'faces_coeff_training', 'faces_coeff_test');
 save(strjoin({res_path 'errors.mat'}, filesep), 'avg_error_training', 'avg_error_test');
