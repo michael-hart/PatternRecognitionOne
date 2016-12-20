@@ -26,8 +26,8 @@ function [ indices, class_actual, class_guesses, percentage ] = ...
     
     % Format data
     title(the_title, 'interpreter', 'latex');
-    xlabel('Actual Class');
-    ylabel('Class Guessed');
+    xlabel('Predicted Class');
+    ylabel('Actual Class');
 
     % Format data
     set(findall(gcf,'type','axes'),'fontsize',25);
