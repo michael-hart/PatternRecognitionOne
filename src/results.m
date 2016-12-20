@@ -30,8 +30,8 @@ function [ indices, class_actual, class_guesses, percentage ] = ...
     ylabel('Actual Class');
 
     % Format data
-    set(findall(gcf,'type','axes'),'fontsize',25);
-    set(findall(gcf,'type','text'),'fontSize',25);
+    set(findall(gcf,'type','axes'),'fontsize',30);
+    set(findall(gcf,'type','text'),'fontSize',30);
     % Save data
     fig = gcf;
     fig.PaperPositionMode = 'auto';
