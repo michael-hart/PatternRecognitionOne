@@ -84,4 +84,9 @@ fig = gcf;
 fig.PaperPositionMode = 'auto';
 print('class3','-dpng','-r0');
 
+show_face(average_face);
+fig = gcf;
+fig.PaperPositionMode = 'auto';
+print('mean_face','-dpng','-r0');
+
 close all;
